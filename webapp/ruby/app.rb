@@ -1,8 +1,13 @@
 require 'digest/sha1'
 require 'mysql2'
 require 'sinatra/base'
+require 'rack-lineprof'
+require 'rack-mini-profiler'
 
 class App < Sinatra::Base
+  use Rack::Lineprof
+  use Rack::MiniProfiler
+
   configure do
     set :session_secret, 'tonymoris'
     set :public_folder, File.expand_path('../../public', __FILE__)
@@ -241,7 +246,7 @@ class App < Sinatra::Base
     @self_profile = user['id'] == @user['id']
     erb :profile
   end
-  
+
   get '/add_channel' do
     if user.nil?
       return redirect '/login', 303
